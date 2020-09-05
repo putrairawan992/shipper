@@ -1,0 +1,8 @@
+.button {
+    cursor: pointer;
+    margin: 0px 3px;
+  }
+  .button:disabled {
+    background-color: gray;
+    cursor: default;
+  }

@@ -1,0 +1,14 @@
+.ant-menu-inline .ant-menu-item::after {
+  border-right: unset !important;
+}
+.ant-menu:not(.ant-menu-horizontal) .ant-menu-item-selected {
+  background-color: unset;
+}
+.ant-menu-item-selected {
+  color: #e62b34 !important;
+  font-weight: 555;
+  border-left: 3px solid #e62b34 !important;
+}
+.ant-menu-inline > .ant-menu-item {
+  font-weight: 555;
+}

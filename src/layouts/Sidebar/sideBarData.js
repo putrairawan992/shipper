@@ -2,7 +2,7 @@ import React from "react";
 import {
   HomeOutlined,
   UserOutlined,
-  VideoCameraOutlined,
+  CalendarOutlined
 } from "@ant-design/icons";
 import PATH_URL from "../../routers/path";
 
@@ -17,4 +17,9 @@ export const Data = [
     icon: <UserOutlined />,
     path: PATH_URL.DRIVER_MANAGEMENT,
   },
+  {
+    label: "Pick Up",
+    icon: <CalendarOutlined />,
+    path:PATH_URL.PICKUP
+  }
 ];

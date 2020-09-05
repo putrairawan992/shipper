@@ -1,29 +1,16 @@
 import React, { useEffect, useState } from "react";
-import Slider from "react-slick";
 import Random from "../../repository/Random";
 import HeaderDriverManagement from "../../components/HeaderDriverManagement";
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from "@ant-design/icons";
-import { Card, Avatar, Row, Col, Typography } from "antd";
-import moment from "moment";
 import { DriverManagementStyle } from "./DriverManagement.style";
-
-const settings = {
-  className: "center",
-  centerMode: true,
-  infinite: true,
-  slidesToShow: 5,
-};
-
-const { Text } = Typography;
+import CardsDriverManagement from "../../components/CardsDriverManagement";
+import ButtonDriverManagement from "../../components/ButtonDriverManagement";
+import { Card } from "antd";
 
 function DriverManagement(props) {
   const [randomUser, setRandomUser] = useState([]);
-  const [search, setSearch] = useState("");
-  let refSlider = React.createRef();
+  const [users, setUsers] = useState([]);
+  const [filteredSearch, setfilteredSearch] = useState([]);
+
   useEffect(() => {
     fetchDataDriverManagement();
   }, []);
@@ -32,84 +19,78 @@ function DriverManagement(props) {
       params: { results: 30 },
     });
     if (response.status === 200) {
-      setRandomUser(response.data.results);
+      setRandomUser(response.data.results); // eslint-disable-next-line
+      response.data.results.map((item, index) => {
+        item.index = index;
+      });
+      setfilteredSearch(response.data.results);
     }
   }
+
   function actionChangeSearch(e) {
-    setSearch(e.target.value);
+    const lowercasedFilter = e.target.value.toLowerCase();
+    setfilteredSearch(
+      randomUser.filter((item) => {
+        return Object.keys(item).some((key) =>
+          item[key].toString().toLowerCase().includes(lowercasedFilter)
+        );
+      })
+    );
   }
+
+  useEffect(() => {
+    // eslint-disable-next-line
+    filteredSearch.map((item, index) => {
+      item.index = index;
+    });
+    setUsers(filteredSearch.slice(0, 5));
+  }, [filteredSearch]);
 
   function next() {
-    refSlider.slickNext();
+    // refSlider.slickNext();
+    if (!users || (users.length > 0 && users[0].index === 29)) {
+      return;
+    } else {
+      setUsers(randomUser.slice(users[4].index + 1, users[4].index + 6));
+    }
   }
   function previous() {
-    refSlider.slickPrev();
+    // refSlider.slickPrev();
+    if (!users || (users.length > 0 && users[0].index === 0)) {
+      return;
+    } else {
+      setUsers(randomUser.slice(users[4].index - 9, users[4].index - 4));
+    }
   }
 
-  const lowercasedFilter = search.toLowerCase();
-  const filteredSearch = randomUser.filter((item) => {
-    return Object.keys(item).some((key) =>
-      item[key].toString().toLowerCase().includes(lowercasedFilter)
-    );
-  });
-  const slides = filteredSearch.map((item, index) => {
-      console.log(index);
-    return (
-      <Col md={5}>
-        <Card
-          key={index}
-          title={
-            <div className="shipper__card__tittle">
-              <Text type="secondary">
-                Driver ID <Text type="danger">{item.id.name}</Text>{" "}
-              </Text>
-              <EllipsisOutlined key="ellipsis" />
-            </div>
-          }
-          style={{ width: 200, marginRight: 15 }}
-          bordered={false}
-        >
-          <div>
-            <Avatar size={64} src={item.picture.medium} />
-          </div>{" "}
-          <Text type="secondary">Name Driver</Text>
-          <Text strong style={{ display: "block" }}>
-            {item.name.first}
-          </Text>
-          <Text type="secondary">Telepon</Text>
-          <Text strong style={{ display: "block" }}>
-            {" "}
-            {item.phone}
-          </Text>{" "}
-          <Text type="secondary">Email</Text>
-          <Text strong style={{ display: "block" }}>
-            {" "}
-            {item.email}
-          </Text>
-          <Text type="secondary">Tanggal Lahir</Text>
-          <Text strong style={{ display: "block" }}>
-            {moment(item.dob.date).format("MM-DD-YYYY")}{" "}
-          </Text>
-        </Card>
-      </Col>
-    );
-  });
   return (
     <DriverManagementStyle>
       <div className="shipper">
-        <HeaderDriverManagement actionChangeSearch={actionChangeSearch} />
-        <Slider ref={(c) => (refSlider = c)} {...settings}>
-          
-          {slides}
-        </Slider>{" "}
-        <div style={{ textAlign: "center" }}>
-          <button className="button" onClick={previous}>
-            Previous
-          </button>
-          <button className="button" onClick={next}>
-            Next
-          </button>
-        </div>
+        <Card>
+          <HeaderDriverManagement actionChangeSearch={actionChangeSearch} />
+          <CardsDriverManagement users={users} />
+          {users.length > 0 && (
+            <div
+              style={{ textAlign: "center", marginTop: 15, marginBottom: 15 }}
+            >
+              {" "}
+              <ButtonDriverManagement
+                validasi={!users || (users.length > 0 && users[0].index === 0)}
+                onClick={previous}
+                label={"< Previous Page"}
+              />
+              <ButtonDriverManagement
+                validasi={
+                  !users ||
+                  (users.length > 0 &&
+                    users[users.length - 1].index === filteredSearch.length - 1)
+                }
+                onClick={next}
+                label={"Next Page >"}
+              />
+            </div>
+          )}{" "}
+        </Card>
       </div>
     </DriverManagementStyle>
   );

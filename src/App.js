@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import { Route, Router, Switch } from "react-router-dom";
 import routes from "./routers/routes";
 import history from "./routers/history";
+import "./assets/style/style.css";
 
 function App() {
   const RouteWithLayout = ({
