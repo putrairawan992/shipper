@@ -1,25 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense } from "react";
+import { Route, Router, Switch } from "react-router-dom";
+import routes from "./routers/routes";
+import history from "./routers/history";
 
 function App() {
+  const RouteWithLayout = ({
+    component: Component,
+    layout: Layout,
+    ...rest
+  }) => {
+    return (
+      <Route
+        {...rest}
+        render={props => (
+            <Layout>
+              <Component {...props} />
+            </Layout>
+        )}
+      />
+    );
+  };
+
+  const routeComponents = routes.map(
+    ({ path, component, layout }, key) => {
+      return (
+        <RouteWithLayout
+          key={key}
+          exact
+          path={path}
+          layout={layout}
+          component={component}
+        />
+      );
+    }
+  );
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router history={history}>
+      <Suspense fallback={null}>
+          <Switch>
+            {routeComponents}
+          </Switch>
+      </Suspense>
+    </Router>
   );
 }
 
