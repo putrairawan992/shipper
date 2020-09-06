@@ -45,6 +45,12 @@ export const DriverManagementStyle = styled.div`
     }
     &__button-driverManagement {
       border: unset;
+      outline: unset;
+      cursor: pointer;
+      background:unset;
+    }
+    &__button-driverManagement::focus {
+      outline: unset !important;
     }
   }
 `;
