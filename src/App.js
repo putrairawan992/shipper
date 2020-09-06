@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React from "react";
 import { Route, Router, Switch } from "react-router-dom";
 import routes from "./routers/routes";
 import history from "./routers/history";
@@ -38,11 +38,9 @@ function App() {
 
   return (
     <Router history={history}>
-      <Suspense fallback={null}>
           <Switch>
             {routeComponents}
           </Switch>
-      </Suspense>
     </Router>
   );
 }
