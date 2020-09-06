@@ -22,7 +22,7 @@ const CardsDriverManagement = (props) => {
     <StyledDiv style={{ display: "flex" }}>
       {users.map((item, index) => {
         return (
-          <Col xs={24} md={5}>
+          <Col key={index} xs={24} md={5}>
             <Card
               key={index}
               title={
