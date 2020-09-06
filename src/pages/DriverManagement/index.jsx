@@ -4,10 +4,11 @@ import HeaderDriverManagement from "../../components/HeaderDriverManagement";
 import { DriverManagementStyle } from "./DriverManagement.style";
 import CardsDriverManagement from "../../components/CardsDriverManagement";
 import ButtonDriverManagement from "../../components/ButtonDriverManagement";
-import { Card } from "antd";
+import { Card, Spin } from "antd";
 
 function DriverManagement(props) {
   const [randomUser, setRandomUser] = useState([]);
+  const [isShowLoading, setIsShowLoading] = useState(false);
   const [users, setUsers] = useState([]);
   const [filteredSearch, setfilteredSearch] = useState([]);
 
@@ -17,6 +18,7 @@ function DriverManagement(props) {
   async function fetchDataDriverManagement() {
     let response = await Random.getUser({
       params: { results: 30 },
+      loading: setIsShowLoading,
     });
     if (response.status === 200) {
       setRandomUser(response.data.results); // eslint-disable-next-line
@@ -65,33 +67,38 @@ function DriverManagement(props) {
 
   return (
     <DriverManagementStyle>
-      <div className="shipper">
-        <Card>
-          <HeaderDriverManagement actionChangeSearch={actionChangeSearch} />
-          <CardsDriverManagement users={users} />
-          {users.length > 0 && (
-            <div
-              style={{ textAlign: "center", marginTop: 15, marginBottom: 15 }}
-            >
-              {" "}
-              <ButtonDriverManagement
-                validasi={!users || (users.length > 0 && users[0].index === 0)}
-                onClick={previous}
-                label={"< Previous Page"}
-              />
-              <ButtonDriverManagement
-                validasi={
-                  !users ||
-                  (users.length > 0 &&
-                    users[users.length - 1].index === filteredSearch.length - 1)
-                }
-                onClick={next}
-                label={"Next Page >"}
-              />
-            </div>
-          )}{" "}
-        </Card>
-      </div>
+      <Spin spinning={isShowLoading}>
+        <div className="shipper">
+          <Card>
+            <HeaderDriverManagement actionChangeSearch={actionChangeSearch} />
+            <CardsDriverManagement users={users} />
+            {users.length > 0 && (
+              <div
+                style={{ textAlign: "center", marginTop: 15, marginBottom: 15 }}
+              >
+                {" "}
+                <ButtonDriverManagement
+                  validasi={
+                    !users || (users.length > 0 && users[0].index === 0)
+                  }
+                  onClick={previous}
+                  label={"< Previous Page"}
+                />
+                <ButtonDriverManagement
+                  validasi={
+                    !users ||
+                    (users.length > 0 &&
+                      users[users.length - 1].index ===
+                        filteredSearch.length - 1)
+                  }
+                  onClick={next}
+                  label={"Next Page >"}
+                />
+              </div>
+            )}{" "}
+          </Card>
+        </div>
+      </Spin>
     </DriverManagementStyle>
   );
 }
