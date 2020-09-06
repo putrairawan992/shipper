@@ -24,7 +24,7 @@ test("renders a message", async () => {
     const response = await Random.getUser({
       params: { results: 30 },
     })
-    
+    expect(response.status).toBe(200);
     if (response.status === 200) {
       const linkElement = getByText("DRIVER MANAGEMENT");
       expect(linkElement).toBeInTheDocument();
